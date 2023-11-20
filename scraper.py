@@ -7,6 +7,7 @@ import pandas as pd
 
 SCRIPT_DIR = Path(__file__).parent.absolute()
 DATA_PATH = SCRIPT_DIR / "data.json"
+OUTPUT_PATH = SCRIPT_DIR / "output.csv"
 
 
 def get_id(url:str):
@@ -74,13 +75,18 @@ def main():
     id = get_id(myurl)
     if id is not None:
         comm_url = get_comments_url(id, 1000)
-        print(comm_url)
+        print(f"\n{comm_url}\n")
         print("Go to this url and select raw data. Copy and paste all the data into \"data.json\".")
         input("Then press Enter to continue...")
         data = read_json()
         mydf = comments_parser(data)
         print(f"Data preview:\n{mydf.head()}")
         print(f"Comments parsed: {mydf.shape[0]}")
+        try:
+            mydf.to_csv(OUTPUT_PATH, index=False)
+            print(f"Data written to \"{OUTPUT_PATH}\".")
+        except:
+            print(f"Couldn't write data to \"{OUTPUT_PATH}\".")
     else:
         print("Couldn't find Article ID")
 
